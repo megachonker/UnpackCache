@@ -1,5 +1,7 @@
 #!/bin/bash
 rm -f cache
+outname=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-8} | head -n 1)
+mkdir $outname
 echo "création d'un fichier déja  trier"
 for fichier in *;do file $fichier|grep 'JPEG\|PNG'|sed "s/: /./"|cut -d " " -f 1|tee -a  cache;done
 nbfichier=$(wc cache -l|cut -d " " -f 1)
@@ -9,7 +11,7 @@ echo "initialisation de la boucle"
 time while read ligne;
 do	
 	((counter+=1))
-	movefile=$(mv -v $(echo $ligne|cut -d "." -f 1) $(echo $ligne|perl -ne 'print lc') 2> /dev/null)
+	movefile=$(mv -v $(echo $ligne|cut -d "." -f 1) $outname/$(echo $ligne|perl -ne 'print lc') 2> /dev/null)
 	echo $counter"/"$nbfichier $movefile ; done < cache
 rm cache
 echo "fin du programe"
