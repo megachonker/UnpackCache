@@ -1,17 +1,27 @@
 #!/bin/bash
-rm -f cache
-outname=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-8} | head -n 1)
-mkdir $outname
+echo C:\Users\XXX\AppData\Local\Mozilla\Firefox\Profiles\XXXX\cache2
+cd /mnt/c/Users/XXXX/AppData/Local/Mozilla/Firefox/Profiles/XXXX/cache2/entries
+
+if [ -z $1 ]
+then
+     out=$RANDOM
+else
+     out=$1
+fi
+mkdir $out
+
+rm cache -f
 echo "création d'un fichier déja  trier"
 for fichier in *;do file $fichier|grep 'JPEG\|PNG'|sed "s/: /./"|cut -d " " -f 1|tee -a  cache;done
 nbfichier=$(wc cache -l|cut -d " " -f 1)
- 
+
 counter=0
 echo "initialisation de la boucle"
 time while read ligne;
-do	
-	((counter+=1))
-	movefile=$(mv -v $(echo $ligne|cut -d "." -f 1) $outname/$(echo $ligne|perl -ne 'print lc') 2> /dev/null)
-	echo $counter"/"$nbfichier $movefile ; done < cache
+do
+     ((counter+=1))
+     movefile=$(mv -v $(echo $ligne|cut -d "." -f 1) $out/$(echo $ligne|perl -ne 'print lc') 2> /dev/null)
+     echo $counter"/"$nbfichier $movefile ; done < cache
 rm cache
 echo "fin du programe"
+cd -
